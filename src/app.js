@@ -12,9 +12,8 @@ import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from "./routes/mocks.router.js"; 
 
 const app = express();
-const PORT = process.env.PORT||8080;
-const connection = mongoose.connect(`mongodb+srv://sarayaq:sarayaq@backend.n3oc2lc.mongodb.net/adoptme?retryWrites=true&w=majority&appName=backend
-`)
+const PORT = process.env.PORT;
+const connection = mongoose.connect(process.env.MONGODB_URI)
 
 app.use(express.json());
 app.use(cookieParser());
