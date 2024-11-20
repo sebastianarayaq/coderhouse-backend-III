@@ -10,7 +10,7 @@ import sessionsRouter from './routes/sessions.router.js';
 
 //Importamos el nuevo router de mocks: 
 import mocksRouter from "./routes/mocks.router.js"; 
-
+mongoose.set('strictQuery', true)
 const app = express();
 const PORT = process.env.PORT;
 const connection = mongoose.connect(process.env.MONGODB_URI)
@@ -43,3 +43,5 @@ const swaggerOptions = {
 const specs = swaggerJSDoc(swaggerOptions);
 
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs)); 
+
+export default app;

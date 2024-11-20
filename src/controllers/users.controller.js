@@ -4,13 +4,27 @@ import { usersService } from "../services/index.js"
 
 const createUser = async (req, res) => {
     try {
-        const nuevoUsuario = req.body; 
-        await usersService.create(nuevoUsuario); 
-        res.status(201).send({status:"success", payload: nuevoUsuario});
+        const { first_name, last_name, email, password } = req.body;
+
+        // Validar los datos de entrada
+        if (!first_name || !last_name || !email || !password) {
+            return res.status(400).send({ status: "error", error: "Incomplete values" });
+        }
+
+        // Verificar si el usuario ya existe
+        const existingUser = await usersService.getUserByEmail(email);
+        if (existingUser) {
+            return res.status(400).send({ status: "error", error: "User already exists" });
+        }
+
+        // Crear el nuevo usuario
+        const newUser = await usersService.create({ first_name, last_name, email, password });
+        res.status(201).send({ status: "success", payload: newUser });
     } catch (error) {
-        res.status(500).send("Error fatal")
+        console.error("Error creating user:", error);
+        res.status(500).send({ status: "error", error: "Internal Server Error" });
     }
-}
+};
 
 const getAllUsers = async(req,res)=>{
     const users = await usersService.getAll();

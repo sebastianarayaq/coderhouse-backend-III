@@ -14,7 +14,7 @@ paths:
                 items: 
                   $ref: "#components/schemas/User"
         "500":
-          description: Error interno del servidor, nos vamos a re morir
+          description: Error interno del servidor
     post:
       summary: Este endpoint crea un usuario
       tags:
@@ -29,7 +29,7 @@ paths:
         "201":
           description: Usuario creado correctamente
         "500": 
-          description: Error terrible, no hay solucion en esta vida
+          description: Error en el servidor
   /api/users/{uid}:
     get:
       summary: Obtenemos un solo usuario por ID
@@ -39,7 +39,7 @@ paths:
       - name: uid
         in: path
         required: true
-        description: id del usuario que se quiere buscar
+        description: ID del usuario a buscar
         schema: 
           type: string
       responses: 
@@ -48,35 +48,51 @@ paths:
           content:
             application/json:
               schema: 
-                type: array
-                items: 
-                  $ref: "#components/schemas/User"
-        "500": 
-          description: Te vas a enferma en el finde largo
-    put: 
-      summary: Actualizamos usuario por ID
-      tags: 
+                $ref: "#components/schemas/User"
+        "404":
+          description: Usuario no encontrado
+    put:
+      summary: Actualizamos un usuario por ID
+      tags:
         - Users
-      parameters: 
+      parameters:
       - name: uid
         in: path
         required: true
-        description: id del usuario que se quiere actualizar
-        schema: 
+        description: ID del usuario a actualizar
+        schema:
           type: string
       requestBody:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: "#components/requestBodies/updateUser"
       responses:
         "200":
           description: Usuario actualizado correctamente
-        "404": 
+        "404":
           description: Usuario no encontrado
-        "500": 
-          description: Error interno del servidor
+        "500":
+          description: Error en el servidor
+    delete:
+      summary: Eliminar un usuario por ID
+      tags:
+        - Users
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        description: ID del usuario a eliminar
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Usuario eliminado correctamente
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error en el servidor
 
 components: 
   schemas:
@@ -84,64 +100,68 @@ components:
       type: object
       properties:
         _id: 
-          type: ObjectId
-          description: Id autogenerado por MongoDB
+          type: string
+          description: ID autogenerado por MongoDB
         first_name: 
           type: string
           description: Nombre del usuario
         last_name: 
           type: string
           description: Apellido del usuario
-        password: 
-          type: string
-          description: Password del usuario
-      example:
-        _id: ObjectId("123456")
-        first_name: Tinki
-        last_name: Winki
-        password: 1234
-  requestBodies:
-    createUser: 
-      type: object
-      properties:
-        first_name: 
-          type: string
-          description: Nombre del usuario
-        last_name: 
-          type: string
-          description: Apellido del usuario
-        password: 
-          type: string
-          description: Password del usuario
         email: 
           type: string
           description: Email del usuario
+        role:
+          type: string
+          description: Rol del usuario (admin/user)
+        pets:
+          type: array
+          items:
+            type: object
+            description: Mascotas asociadas al usuario
       example:
-        first_name: Mirtha
-        last_name: Legrand
-        password: 1234
-        email: chiqui@arcanoe.com
+        _id: "123456"
+        first_name: "Tinki"
+        last_name: "Winki"
+        email: "tinki@winki.com"
+        role: "user"
+        pets: []
+
+  requestBodies:
+    createUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        first_name: "Mirtha"
+        last_name: "Legrand"
+        email: "mirtha@example.com"
+        password: "1234"
     updateUser:
       type: object
       properties:
-        first_name: 
+        first_name:
           type: string
-          description: Nombre del usuario
-        last_name: 
+        last_name:
           type: string
-          description: Apellido del usuario
-        password: 
+        email:
           type: string
-          description: Password del usuario
-        email: 
+        role:
           type: string
-          description: Email del usuario
+        pets:
+          type: array
+          items:
+            type: object
       example:
-        first_name: Mirtha
-        last_name: Legrand
-        password: 1234
-        email: chiqui@legrand.com
-
-        
-
-    
+        first_name: "Mirtha"
+        last_name: "Legrand"
+        email: "mirtha@update.com"
+        role: "admin"
+        pets: []

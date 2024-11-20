@@ -26,8 +26,23 @@ const createAdoption = async(req,res)=>{
     res.send({status:"success",message:"Pet adopted"})
 }
 
+const deleteAdoption = async (req, res) => {
+    try {
+      const adoptionId = req.params.id;
+      const result = await adoptionsService.delete(adoptionId);
+      if (!result) {
+        return res.status(404).send({ status: "error", message: "Adoption not found" });
+      }
+      res.status(200).send({ status: "success", message: "Adoption deleted" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ status: "error", message: "Internal Server Error" });
+    }
+  };
+
 export default {
     createAdoption,
     getAllAdoptions,
-    getAdoption
+    getAdoption,
+    deleteAdoption
 }
